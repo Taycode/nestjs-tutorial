@@ -7,6 +7,7 @@ import {
   Query,
   NotFoundException,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -16,7 +17,9 @@ import {
   ApiTags,
   ApiQuery,
   ApiNotFoundResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('Users')
 @Controller('users')
@@ -40,6 +43,8 @@ export class UsersController {
     return user;
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiCreatedResponse({ type: User })
   @Post('/create')
   createUser(@Body() body: CreateUserDto): User {
